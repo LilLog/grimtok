@@ -1,6 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react'
 import ArticleCard from './FeedCard';
+import LoadingSpinner from './Loading';
 
 
 interface Article {
@@ -105,7 +106,7 @@ const SnapScrollComponent: React.FC = () => {
         fetchMoreArticles();
       }, []);
 
-    if (articles.length < 4) return <p>Loading...</p>;
+    if (articles.length < 4) return <LoadingSpinner></LoadingSpinner>;
 
   return (
     <div className="snap-y snap-mandatory h-screen overflow-y-scroll hide-scroll">
