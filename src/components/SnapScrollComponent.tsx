@@ -10,6 +10,10 @@ interface Article {
     imageUrl: string;
   }
 
+function trimString(input: string, maxLength: number): string {
+  return input.length > maxLength ? input.slice(0, maxLength) + "..." : input;
+}
+
 const SnapScrollComponent: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   
@@ -73,7 +77,7 @@ const SnapScrollComponent: React.FC = () => {
       }
 
       // Step 2: Fetch article summary and image
-      const summary = firstPage?.extract;
+      const summary = trimString(firstPage?.extract, 500);
       const link = firstPage?.fullurl;
       
       return {
