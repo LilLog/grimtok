@@ -153,6 +153,7 @@ const SnapScrollComponent: React.FC = () => {
         </div>
       ))}
       <div ref={sentinelRef} className="h-1"></div>
+      <img src="https://images.ctfassets.net/ps7sveckw0ws/5sFBsAZ8RT8k1khbOfdloT/78945ae16ba082d5ba4a5dd88ceaba6e/Quiz_Image.jpg" alt="End of Content" className="max-w-full max-h-full object-cover" />
       {isFetching && <LoadingSpinner></LoadingSpinner>}
     </div>
   );
