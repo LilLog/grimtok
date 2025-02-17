@@ -100,7 +100,7 @@ const SnapScrollComponent: React.FC = () => {
         setIsFetching(true);
         try {
           const newArticles: Article[] = [];
-          for (let i = 0; i < 3; i++) {
+          for (let i = 0; i < 5; i++) {
             const article = await fetchRandomArticle();
             if (article) newArticles.push(article);
           }
