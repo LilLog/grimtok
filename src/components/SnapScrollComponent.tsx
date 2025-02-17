@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import ArticleCard from './FeedCard';
 import LoadingSpinner from './Loading';
 
@@ -17,6 +17,9 @@ function trimString(input: string, maxLength: number): string {
 
 const SnapScrollComponent: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
+  const [isFetching, setIsFetching] = useState(false);
+  const [getMore, setGetMore] = useState(true);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
   
   const fetchRandomArticle = async (): Promise<Article | null> => {
     try {
@@ -94,19 +97,45 @@ const SnapScrollComponent: React.FC = () => {
     }
 
     const fetchMoreArticles = async () => {
-        const newArticles: Article[] = [];
-        for (let i = 0; i < 5; i++) {
-          const article = await fetchRandomArticle();
-          if (article) newArticles.push(article);
+        setIsFetching(true);
+        try {
+          const newArticles: Article[] = [];
+          for (let i = 0; i < 3; i++) {
+            const article = await fetchRandomArticle();
+            if (article) newArticles.push(article);
+          }
+          setArticles((prevArticles) => [...prevArticles, ...newArticles]);
+        } catch (error) {
+          console.error("Error fetching Wikipedia article:", error);
+        }  finally {
+          setIsFetching(false);
         }
-        setArticles((prevArticles) => [...prevArticles, ...newArticles]);
       };
     
       useEffect(() => {
         fetchMoreArticles();
-      }, []);
+      }, [getMore]);
 
-    if (articles.length < 4) return <LoadingSpinner></LoadingSpinner>;
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && !isFetching) {
+            setGetMore((prevSate) => !prevSate);
+          }
+        },
+        { threshold: 0 }
+      );
+  
+      if (sentinelRef.current) {
+        observer.observe(sentinelRef.current);
+      }
+  
+      return () => {
+        if (sentinelRef.current) {
+          observer.unobserve(sentinelRef.current);
+        }
+      };
+    }, [isFetching]);
 
   return (
     <div className="snap-y snap-mandatory h-screen overflow-y-scroll hide-scroll">
@@ -123,6 +152,8 @@ const SnapScrollComponent: React.FC = () => {
             />
         </div>
       ))}
+      <div ref={sentinelRef} className="h-1"></div>
+      {isFetching && <LoadingSpinner></LoadingSpinner>}
     </div>
   );
 };
