@@ -104,7 +104,7 @@ const SnapScrollComponent: React.FC = () => {
     if (articles.length < 4) return <p>Loading...</p>;
 
   return (
-    <div className="snap-y snap-mandatory h-screen overflow-y-scroll">
+    <div className="snap-y snap-mandatory h-screen overflow-y-scroll hide-scroll">
       {articles.map((article, index) => (
         <div
           key={index}
